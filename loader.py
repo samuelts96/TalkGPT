@@ -20,4 +20,5 @@ def load_documents(doc_dir = "./docs"):
         loader = PyMuPDFLoader(str(pdf_file))
         docs.extend(loader.load())
 
+
     return docs
