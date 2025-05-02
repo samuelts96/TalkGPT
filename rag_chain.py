@@ -4,6 +4,7 @@ from langchain_openai import ChatOpenAI
 from prompts import RESTRICTED_CONTEXT_PROMPT
 from langchain.chains import RetrievalQA
 
+
 from loader import load_documents
 from embed_store import create_or_load_vectorstore
 import os

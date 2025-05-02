@@ -9,14 +9,14 @@ import pickle
 def create_or_load_vectorstore(documents, persist_path="vectorstore/faiss_index", embedding_model="text-embedding-3-small"):
     os.makedirs("vectorstore", exist_ok=True)
 
-    index_file = persist_path + ".faiss"
+    index_file = persist_path + "/index.faiss"
 
-    # Try to load existing index
     if os.path.exists(index_file):
-        return FAISS.load_local(persist_path, OpenAIEmbeddings(model=embedding_model))
+        print('*' * 100)
+        return FAISS.load_local(persist_path, OpenAIEmbeddings(model=embedding_model),allow_dangerous_deserialization=True)
 
-    if not documents:
-        raise ValueError("No documents provided for embedding.")
+    # if not documents:
+    #     raise ValueError("No documents provided for embedding.")
 
     # Otherwise, embed and save
     splitter = RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=150)
@@ -26,6 +26,9 @@ def create_or_load_vectorstore(documents, persist_path="vectorstore/faiss_index"
     store = FAISS.from_documents(split_docs, embeddings)
 
     store.save_local(persist_path)
+    print('#' * 100)
+    print('Here is the store')
+
     return store
 
 

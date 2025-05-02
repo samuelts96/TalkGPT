@@ -43,6 +43,7 @@ if prompt := st.chat_input("What is up?"):
     
     # response = f"Echo: {prompt}"
     response = qa_chain_func({"question": prompt, "chat_history": chat_history})    # Display assistant response in chat message container
+    print(response['source_documents'])
     # print(response.source_documents)
     with st.chat_message("assistant"):
         st.markdown(response['answer'])
