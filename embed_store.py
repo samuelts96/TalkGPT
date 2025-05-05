@@ -29,7 +29,8 @@ def create_or_load_vectorstore(documents, persist_path="vectorstore/faiss_index"
 
     store.save_local(persist_path)
     print('#' * 100)
-    print('Here is the store')
+    print('Created new Vector')
+    print('#' * 100)
 
     return store
 
