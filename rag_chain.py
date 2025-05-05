@@ -1,8 +1,10 @@
 # rag_chain.py
+# rag_chain.py
 from langchain.chains import ConversationalRetrievalChain
 from langchain_openai import ChatOpenAI
-from prompts import RESTRICTED_CONTEXT_PROMPT
+from prompts import TEACHING_PROMPT,RESTRICTED_CONTEXT_PROMPT,FRIENDLY_PROMPT,CONCISE_PROMPT
 from langchain.chains import RetrievalQA
+ 
 
 
 from loader import load_documents
@@ -31,5 +33,23 @@ def build_qa_chain(vectorstore, model="gpt-4.1-nano-2025-04-14", openai_api_key=
         return_source_documents=True,
         combine_docs_chain_kwargs={"prompt": RESTRICTED_CONTEXT_PROMPT},
     )
-
+    chain = ConversationalRetrievalChain.from_llm(
+     llm=llm,
+     retriever=retriever,
+     return_source_documents=True,
+     combine_docs_chain_kwargs={"prompt": TEACHING_PROMPT},
+)
+    
+    chain = ConversationalRetrievalChain.from_llm(
+     llm=llm,
+     retriever=retriever,
+     return_source_documents=True,
+     combine_docs_chain_kwargs={"prompt": FRIENDLY_PROMPT},
+)
+    chain = ConversationalRetrievalChain.from_llm(
+     llm=llm,
+     retriever=retriever,
+     return_source_documents=True,
+     combine_docs_chain_kwargs={"prompt": CONCISE_PROMPT},
+)
     return chain

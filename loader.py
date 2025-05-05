@@ -12,6 +12,7 @@ def load_html_utf8(filepath):
 def load_documents(doc_dir = "./docs"):
     html_file = Path(doc_dir) / "meteorology_ebook.html"
     pdf_file = Path(doc_dir) / "ngc.pdf"
+    
 
     docs = []
     if html_file.exists():
@@ -19,6 +20,12 @@ def load_documents(doc_dir = "./docs"):
     if pdf_file.exists():
         loader = PyMuPDFLoader(str(pdf_file))
         docs.extend(loader.load())
+        
+ # Debug print statements — placed after loading
+    print(f">>> Loaded {len(docs)} documents.")
+    if docs:
+        print(f">>> Sample content: {docs[0].page_content[:500]}")
 
+    return docs
 
     return docs

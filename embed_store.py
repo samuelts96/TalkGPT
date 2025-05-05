@@ -13,8 +13,6 @@ def create_or_load_vectorstore(documents, persist_path="vectorstore/faiss_index"
 
     if os.path.exists(index_file):
         print('*' * 100)
-        print('Loading existing index...')
-        print('*' * 100)
         return FAISS.load_local(persist_path, OpenAIEmbeddings(model=embedding_model),allow_dangerous_deserialization=True)
 
     # if not documents:
@@ -23,6 +21,7 @@ def create_or_load_vectorstore(documents, persist_path="vectorstore/faiss_index"
     # Otherwise, embed and save
     splitter = RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=150)
     split_docs = splitter.split_documents(documents)
+    print(f">>> Splitting into {len(split_docs)} chunks.")
 
     embeddings = OpenAIEmbeddings(model=embedding_model)
     store = FAISS.from_documents(split_docs, embeddings)
