@@ -2,50 +2,73 @@ import streamlit as st
 from loader import load_documents
 from embed_store import create_or_load_vectorstore
 from rag_chain import build_qa_chain, qa_chain
-import os 
+import os
 
 qa_chain_func = qa_chain()
-# documents = load_documents()
-# vectorstore = create_or_load_vectorstore(documents)
-# qa_chain = build_qa_chain(vectorstore, openai_api_key=os.environ["OPENAI_API_KEY"])
 
 st.title("Echo Bot")
 
-# documents = load_documents()
-# vectorstore = create_or_load_vectorstore(documents)
-# retriever = vectorstore.as_retriever()
-# qa_chain = build_qa_chain(vectorstore, openai_api_key=os.environ["OPENAI_API_KEY"])
-
-# Initialize chat history
 if "messages" not in st.session_state:
     st.session_state.messages = []
 
-# Display chat messages from history on app rerun
-for message in st.session_state.messages:
+# Display chat history
+for i, message in enumerate(st.session_state.messages):
     with st.chat_message(message["role"]):
         st.markdown(message["content"])
 
+    if message["role"] == "assistant":
+        with st.chat_message("assistant"):
+            st.markdown(message["content"])
 
-# Extract chat history (just user & assistant content)
-chat_history = [
-    (m["content"], st.session_state.messages[i + 1]["content"])
-    for i, m in enumerate(st.session_state.messages)
-    if m["role"] == "user" and i + 1 < len(st.session_state.messages)
-]
+            # Flattened: one expander per source doc, directly under response
+            if message.get("context"):
+                
+                for idx, doc in enumerate(message["context"]):
+                    st.write(doc.metadata)
+                    st.markdown("**Context Source:**")
+                    with st.expander(f"📄 Document {idx + 1} — {doc.metadata.get('source', 'Unknown')}"):
+                        print(doc)
+                        st.text_area(
+                            label=' ',
+                            value=doc.metadata,
+                            height=150,
+                            key=f"context_{i}_{idx}"
+                        )
 
-# React to user input
+chat_history = []
+for i in range(0, len(st.session_state.messages) - 1, 2):
+    user_msg = st.session_state.messages[i]
+    if i + 1 < len(st.session_state.messages):
+        assistant_msg = st.session_state.messages[i + 1]
+        chat_history.append({
+            "user": user_msg["content"],
+            "assistant": assistant_msg["content"],
+            # "context": assistant_msg.get("context", None)
+        })
+
 if prompt := st.chat_input("What is up?"):
-    # Display user message in chat message container
     with st.chat_message("user"):
         st.markdown(prompt)
-    # Add user message to chat history
-    st.session_state.messages.append({"role": "user", "content": prompt})
-    
-    # response = f"Echo: {prompt}"
-    response = qa_chain_func({"question": prompt, "chat_history": chat_history})    # Display assistant response in chat message container
-    print(response['source_documents'])
-    # print(response.source_documents)
+    st.session_state.messages.append({"role": "user", "content": prompt, 'context': None})
+
+    response = qa_chain_func({"question": prompt, "chat_history": chat_history})
+
     with st.chat_message("assistant"):
         st.markdown(response['answer'])
-    # Add assistant response to chat history
-    st.session_state.messages.append({"role": "assistant", "content": response['answer']})
+
+        # Show each source document as a separate expander
+        st.markdown("**Context Source:**")
+        if response.get("source_documents"):
+            for idx, doc in enumerate(response["source_documents"]):
+                with st.expander(f"📄 Document {idx + 1} — {doc.metadata.get('source', 'Unknown')}"):
+                    st.text_area(
+                        label= ' ',
+                        value=doc.page_content,
+                        height=150,
+                        key=f"latest_context_{idx}"
+                    )
+    st.session_state.messages.append({
+        "role": "assistant",
+        "content": response['answer'],
+        "context": response.get("source_documents", [])
+    })

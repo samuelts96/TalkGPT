@@ -13,6 +13,8 @@ def create_or_load_vectorstore(documents, persist_path="vectorstore/faiss_index"
 
     if os.path.exists(index_file):
         print('*' * 100)
+        print('Loading existing index...')
+        print('*' * 100)
         return FAISS.load_local(persist_path, OpenAIEmbeddings(model=embedding_model),allow_dangerous_deserialization=True)
 
     # if not documents:
