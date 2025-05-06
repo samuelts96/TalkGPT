@@ -15,7 +15,8 @@ def qa_chain():
     return build_qa_chain(vectorstore, openai_api_key=os.environ["OPENAI_API_KEY"])
 
 qa_chain_func = qa_chain()
-st.title("Dr. Meteor")
+st.title("Mr. Meteor")
+st.markdown('To answer all your Meteor related queries')
 
 if st.sidebar.button("New Chat"):
     st.session_state.messages = []
