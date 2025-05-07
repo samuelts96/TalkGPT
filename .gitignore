@@ -1,12 +1,8 @@
 __pycache__/
-meteorology_files/html/*
-meteorology_files/pdf/*
 old_code.txt
 test_ChatGPT.py
 weather_data_url_request.py
 .env
-*.html
-*.pdf
 secrets.toml
 index.faiss
 index.pkl

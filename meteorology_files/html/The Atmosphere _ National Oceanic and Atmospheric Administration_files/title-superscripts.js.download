@@ -1,0 +1,11 @@
+(function ($, Drupal, cookies) {
+  Drupal.behaviors.noaaTitleSuperscripts = {
+    attach: function(context, settings) {
+      $(once('noaa-title-superscript', '.c-page-title', context)).each(function(){
+        var pattern = /\b(®|™)/gi; // words you want to wrap
+        var replaceWith = '<sup>$1</sup>'; // Here's the wap
+        $(this).html($(this).html().replace(pattern,replaceWith));
+      });
+    }
+  };
+})(jQuery, Drupal, window.Cookies);

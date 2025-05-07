@@ -1,0 +1,9 @@
+document.addEventListener('onTouchpointsModalOpen', function() {
+  // Ensure dataLayer exists
+  window.dataLayer = window.dataLayer || [];
+  // Push the event data to dataLayer
+  window.dataLayer.push({
+    event: 'buttonClick',
+    buttonLabel: 'Feedback Button', // Hardcoded label
+  });
+});
