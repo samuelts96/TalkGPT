@@ -1,0 +1,8 @@
+meteorology_files/
+vectorstore/
+__pycache__/
+.streamlit/
+old_code.txt
+test_ChatGPT.py
+weather_data_url_request.py
+.env
