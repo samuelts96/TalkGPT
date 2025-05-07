@@ -15,15 +15,13 @@ def qa_chain():
     return build_qa_chain(vectorstore, openai_api_key=os.environ["OPENAI_API_KEY"])
 
 qa_chain_func = qa_chain()
-st.title("Mr. Meteor")
-st.markdown('To answer all your Meteor related queries')
+st.title("Dr. Weather")
+st.markdown('To answer all your Meteorology related queries')
 
 if st.sidebar.button("New Chat"):
     st.session_state.messages = []
     st.session_state.input_text = ""
     st.rerun()
-
-
 
 if "messages" not in st.session_state:
     st.session_state.messages = []
@@ -31,10 +29,17 @@ if "messages" not in st.session_state:
 if "input_text" not in st.session_state:
     st.session_state.input_text = ""
 
+fallback_responses = [
+    "I don’t have enough information to answer that at the moment.",
+    "Hi there! How can I help you with weather or atmospheric questions today?",
+    "Hi there! I'm doing well, thanks for asking. How about you? If you're curious about the weather or clouds today, I'd be happy to share some info!"
+]
+
 for i, message in enumerate(st.session_state.messages):
     with st.chat_message(message["role"]):
         st.markdown(message["content"])
-        if message["role"] == "assistant" and message.get("context"):
+
+        if (message["role"] == "assistant" and message.get("context") and message["content"] not in fallback_responses):
             st.markdown("**Context Source:**")
             for idx, doc in enumerate(message["context"]):
                 with st.expander(f"📄 Document {idx + 1} — {doc.metadata.get('source', 'Unknown')}"):
@@ -44,7 +49,7 @@ for i, message in enumerate(st.session_state.messages):
                         height=150,
                         key=f"context_{i}_{idx}"
                     )
-
+        
 suggestions = [
     "What causes thunderstorms?",
     "How are hurricanes formed?",
@@ -52,7 +57,7 @@ suggestions = [
 ]
 
 cols = st.columns(3)
-if len(st.session_state.messages) <1:
+if len(st.session_state.messages) < 1:
     for i, (col, suggestion) in enumerate(zip(cols, suggestions)):
         if col.button(suggestion, key=f"suggest_{i}"):
             st.session_state.input_text = suggestion
@@ -76,6 +81,33 @@ if submitted and prompt:
 
     # Get response
     response = qa_chain_func.invoke({"question": prompt, "chat_history": chat_history})
+    
+
+    
+
+    # Handle small talk and personal questions
+    small_talk = ["hi", "hello", "hey"]
+    personal_qs = ["what is my name", "who am i", "do you know me", "where do i live"]
+
+    lower_prompt = prompt.lower().strip()
+
+    if lower_prompt in small_talk:
+        response_text = "Hello! I'm here to help with weather or climate questions. Ask me anything about meteorology!"
+        st.session_state.messages.append({
+            "role": "assistant",
+            "content": response_text,
+            "context": []
+        })
+        st.rerun()
+
+    if lower_prompt in personal_qs:
+        response_text = "I don’t have enough information to answer that at the moment."
+        st.session_state.messages.append({
+            "role": "assistant",
+            "content": response_text,
+            "context": []
+        })
+        st.rerun()
 
     # Append assistant response (no immediate rendering!)
     st.session_state.messages.append({
