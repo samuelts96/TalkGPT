@@ -9,8 +9,9 @@ from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.document_loaders import PyMuPDFLoader, TextLoader, Docx2txtLoader
 
 from langchain.chains import RetrievalQA
-from langchain.chat_models import ChatOpenAI
+from langchain_community.chat_models import ChatOpenAI
 from langchain.docstore.document import Document
+
 
 # ----------------------- Config -----------------------
 st.set_page_config(page_title="Personal Knowledge Assistant")
