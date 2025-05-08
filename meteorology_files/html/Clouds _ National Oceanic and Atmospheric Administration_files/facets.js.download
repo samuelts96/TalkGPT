@@ -1,0 +1,38 @@
+(function ($, Drupal, cookies) {
+  Drupal.behaviors.facets = {
+    attach: function(context, settings) {
+      $(once('Facet-Toggle', '.c-block--provider-facets .c-block__title, .c-view__facets .c-form-item__label', context)).click(function(){
+        $(this).toggleClass('open').parent(':not(.js-form-item-sort-bef-combine)').siblings('.form-actions').toggleClass('open');
+        $(this).attr('aria-expanded', $(this).attr('aria-expanded')=="true"? false : true);
+      });
+      $('.c-block--provider-facets .c-block__title, .c-view__facets .c-form-item__label', context).keydown(function(){
+        if (event.keyCode === 13 || event.keyCode === 32) {
+          event.preventDefault();
+          $(this).click();
+        }
+      });
+
+      $(once('Facet-SubToggle', '.facet-widget-levels', context)).click(function(){
+        $(this).parents('.facet-item--expanded').toggleClass('open');
+        event.preventDefault();
+      });
+
+      $(once('Facet-Subtoggle-Key', '.facet-widget-levels', context)).keydown(function(){
+        console.log(event.keyCode);
+        if (event.keyCode === 13 || event.keyCode === 32) {
+          event.preventDefault();
+          $(this).click();
+        }
+      });
+
+      //Work around for https://www.drupal.org/project/twig_tweak/issues/3068078
+      $('li.facet-item a.is-active').closest('.c-block--provider-facets').addClass('facet-active').children('.c-block__title').addClass('open').attr('aria-expanded', true);
+
+      if($(".linkable-reset").length > 0) {
+        $(once('Facet-Scroll-Top', [document.documentElement, document.body], context)).animate({
+          scrollTop: $(".linkable-reset").offset().top
+        }, 500);
+      }
+    }
+  };
+})(jQuery, Drupal, window.Cookies);

@@ -1,0 +1,11 @@
+(function ($, Drupal, settings) {
+  Drupal.behaviors.freezeFrameInitialize = {
+    attach: function attach(context) {
+      $(once('noaa-freeframe-initialize', 'body', context)).each(function( index ) {
+        new Freezeframe('.noaa-gif-player', {trigger: 'click',
+          overlay: true
+        });
+      });
+    }
+  }
+})(jQuery, Drupal, drupalSettings);

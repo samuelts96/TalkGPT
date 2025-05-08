@@ -1,0 +1,10 @@
+(function ($, Drupal, settings) {
+  Drupal.behaviors.citeThisPage = {
+    attach: function attach(context) {
+      $(once('cite-this-page', '.cite-this-page a', context)).on('click', function(e){
+        e.preventDefault();
+        $("#block-noaa-guswds-citationselectblock").slideToggle(300)();
+      });
+    }
+  }
+})(jQuery, Drupal, drupalSettings);

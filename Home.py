@@ -3,6 +3,12 @@ from loader import load_documents
 from embed_store import create_or_load_vectorstore
 from rag_chain import build_qa_chain, qa_chain
 import os
+from dotenv import load_dotenv
+
+
+load_dotenv()
+os.environ["OPENAI_API_KEY"] = os.getenv("OPENAI_API_KEY")
+
 
 @st.cache_resource()
 def get_vectorstore():

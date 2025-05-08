@@ -11,7 +11,11 @@ from langchain.document_loaders import PyMuPDFLoader, TextLoader, Docx2txtLoader
 from langchain.chains import RetrievalQA
 from langchain_community.chat_models import ChatOpenAI
 from langchain.docstore.document import Document
+from dotenv import load_dotenv
 
+
+load_dotenv()
+os.environ["OPENAI_API_KEY"] = os.getenv("OPENAI_API_KEY")
 
 # ----------------------- Config -----------------------
 st.set_page_config(page_title="Personal Knowledge Assistant")

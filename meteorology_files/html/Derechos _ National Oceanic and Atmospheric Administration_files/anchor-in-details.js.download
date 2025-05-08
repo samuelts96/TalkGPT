@@ -1,0 +1,14 @@
+(function ($, Drupal, settings) {
+  Drupal.behaviors.anchor_in_details = {
+    attach: function attach(context) {
+      $(once('anchor-in-details', 'body', context)).each(function () {
+        var hash = $(location).attr('hash');
+        var anchor = $(hash);
+
+        if (anchor.is(":hidden")) {
+          anchor.closest("details").prop("open", true);
+        }
+      });
+    }
+  }
+})(jQuery, Drupal, drupalSettings);
