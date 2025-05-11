@@ -1,7 +1,6 @@
 import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
-from langchain_experimental.agents import create_csv_agent
 from langchain_openai import ChatOpenAI
 import tempfile
 import os
@@ -19,8 +18,8 @@ from dotenv import load_dotenv
 load_dotenv()
 os.environ["OPENAI_API_KEY"] = os.getenv("OPENAI_API_KEY")
 
-st.set_page_config(page_title="Dr Weather Analyze", layout="wide")
-st.title("📊 Chat with Your CSV")
+st.set_page_config(page_title="InsightCanvas", layout="wide")
+st.title("Chat with Your CSV")
 
 uploaded_file = st.file_uploader("Upload your CSV file", type=["csv"])
 
@@ -45,6 +44,7 @@ if uploaded_file:
     df = pd.read_csv(uploaded_file)
 
     llm = ChatOpenAI(temperature=0, model="gpt-4.1-nano-2025-04-14")
+
     agent = create_pandas_dataframe_agent(
         llm=llm,
         df=df,
@@ -57,7 +57,7 @@ if uploaded_file:
 
     st.success("CSV loaded! Ask your question or request a plot.")
 
-    user_input = st.text_area("Ask a question or request a plot (e.g., 'Plot average price by year'):")
+    user_input = st.text_area("Ask a question or request a plot (e.g., 'Plot average rainfall by year'):")
 
     if st.button("Run"):
         with st.spinner("Thinking..."):
